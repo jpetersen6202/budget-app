@@ -6,10 +6,13 @@ import { useBudgets } from './contexts/BudgetsContext'
 import AddExpenseModal from './components/AddExpenseModal';
 import UncategorizedBudgetCard from './components/UncategorizedBudgetCard';
 import TotalBudgetCard from './components/TotalBudgetCard';
+import ViewExpensesModal from './components/ViewExpensesModal';
+import { UNCATEGORIZED_BUDGET_ID } from './contexts/BudgetsContext';
 
 function App() {
   const [showAddBudgetModal, setShowAddBudgetModal] = useState(false)
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false)
+  const [viewExpensesModalBudgetId, SetViewExpensesModalBudgetId] = useState()
   const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] = useState()
   const { budgets, expenses, getBudgetExpenses } = useBudgets()
 
@@ -37,14 +40,15 @@ function App() {
               const amount = getBudgetExpenses(budget.id).reduce(
                 (total, expense) => total + expense.amount, 0
               )
-              return (<BudgetCard key={budget.id} name={budget.name} amount={amount} max={budget.max} onAddExpenseClick={() => openAddExpenseModal(budget.id)}/>)
+              return (<BudgetCard key={budget.id} name={budget.name} amount={amount} max={budget.max} onAddExpenseClick={() => openAddExpenseModal(budget.id)} onViewExpensesClick={() => SetViewExpensesModalBudgetId(budget.id)}/>)
             })}
-            <UncategorizedBudgetCard onAddExpenseClick={() => openAddExpenseModal()}/>
+            <UncategorizedBudgetCard onAddExpenseClick={() => openAddExpenseModal()} onViewExpensesClick={() => SetViewExpensesModalBudgetId(UNCATEGORIZED_BUDGET_ID)}/>
             <TotalBudgetCard />
         </div>
       </Container>
       <AddBudgetModal show={showAddBudgetModal} handleClose={() => setShowAddBudgetModal(false)} />
       <AddExpenseModal show={showAddExpenseModal} defaultBudgetId={addExpenseModalBudgetId} handleClose={() => setShowAddExpenseModal(false)} />
+      <ViewExpensesModal budgetId={viewExpensesModalBudgetId} handleClose={() => SetViewExpensesModalBudgetId()} />
     </>
   );
 }
